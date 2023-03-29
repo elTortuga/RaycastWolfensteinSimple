@@ -1,8 +1,8 @@
-const CONSTANT_SPEED = .005;
-const CONSTANT_ANGLE_SPEED = .01;
+const CONSTANT_SPEED = .004;
+const CONSTANT_ANGLE_SPEED = .025;
 const CANVAS_HEIGHT = 600;
 const CANVAS_WIDTH = 1200;
-const DEPTH = 16;
+const DEPTH = 20;
 const FIELD_OF_VIEW = Math.PI / 4;
 const MAP_HEIGHT = 16;
 const MAP_WIDTH = 16;
@@ -154,7 +154,22 @@ function draw(ctx, progress) {
     ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(0,0,CANVAS_WIDTH, CANVAS_HEIGHT);
     console.log("drawing");
-
+    
+    
+    // fill floor
+    for (let i = 0; i < 16; i++) {
+        let c = Math.floor(255 * i/16);   
+        console.log(`${c}`);   
+        ctx.fillStyle = `rgb(${c},${c} ,${c})`;
+        ctx.fillRect(
+            0, 
+            // CANVAS_HEIGHT/2 + (i * (VERTICAL_RECTANGLES / 16) * RECT_HEIGHT),
+            CANVAS_HEIGHT/2 + (i * (VERTICAL_RECTANGLES / 16) * RECT_HEIGHT),
+            CANVAS_WIDTH,
+            (VERTICAL_RECTANGLES / 16) * RECT_HEIGHT +1
+        );
+    }
+    
     for (let x = 0; x < HORIZONTAL_RECTANGLES; x++) {
         console.log("outerLoop: " + x);
         let rayAngle = (angle - FIELD_OF_VIEW/2) + (x/HORIZONTAL_RECTANGLES) * FIELD_OF_VIEW;
@@ -222,12 +237,10 @@ function draw(ctx, progress) {
         } else {
             ctx.fillStyle = "#111122";
         }
-        ctx.fillRect(x*RECT_WIDTH, RECT_HEIGHT * ceiling, RECT_WIDTH, floor * RECT_HEIGHT);
-        // fill floor
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(x*RECT_WIDTH, floor * RECT_HEIGHT, RECT_WIDTH, CANVAS_HEIGHT);
+        ctx.fillRect(x*RECT_WIDTH, RECT_HEIGHT * ceiling, RECT_WIDTH, CANVAS_HEIGHT - (RECT_HEIGHT * ceiling) *2 );
+        
     }
-
+    
     // info
     ctx.fillStyle = "#FF2222";
     ctx.fillRect(CANVAS_WIDTH-100, 0, 100, 70);
@@ -242,16 +255,14 @@ function draw(ctx, progress) {
     //mini map
     ctx.fillStyle = "#22FF22";
     ctx.fillRect(0, 0, 160, 160);
-    ctx.fillStyle = '#000000';
-    
+    ctx.fillStyle = '#000000';    
     for (let i = 0; i < MAP_WIDTH; i++) {
         for (let j = 0; j < MAP_WIDTH; j++) {
             if ( map[j * MAP_WIDTH + i] === '#' ) {                
                 ctx.fillRect(i*10,j*10, 10, 10) ;
             }
         }
-    }
-    
+    }    
     ctx.fillStyle = '#FF0000';
     ctx.beginPath();
     ctx.arc(posX*10-5, posY*10-5, 5, 0, 2*Math.PI);
